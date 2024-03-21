@@ -13,16 +13,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   //reference box
-  final _myBox = Hive.box('mybox');
+  final _myBox = Hive.box('boxTask');
   ToDoDataBase db = ToDoDataBase();
 
   @override
   void initState() {
-
-    // if the 1st time ever openning the app, then create default data
-    if(_myBox.isEmpty) {
+    if (_myBox.isEmpty) {
       db.createInitialData();
-    }else{
+    } else {
       //there already exists data
       db.loadData();
     }
@@ -42,18 +40,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   // save new task
-  void saveNewTask(){
+  void saveNewTask() {
     setState(() {
-      db.toDoList.add([ _controller.text,false ]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
     db.updateDataBase();
-
   }
 
   // create new task
-  void createNewTask(){
+  void createNewTask() {
     showDialog(
       context: context,
       builder: (context) {
@@ -62,33 +59,34 @@ class _HomePageState extends State<HomePage> {
           onSave: saveNewTask,
           onCancel: () => Navigator.of(context).pop(),
         );
-    },
+      },
     );
   }
 
   //delete Task
-  void deleteTask(int index){
+  void deleteTask(int index) {
     setState(() {
       db.toDoList.removeAt(index);
     });
 
     db.updateDataBase();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.yellow[200],
       appBar: AppBar(
-        
         centerTitle: true,
-        title: Text('TO DO', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: const Text(
+          'TO DO',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTask,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: ListView.builder(
         itemCount: db.toDoList.length,
